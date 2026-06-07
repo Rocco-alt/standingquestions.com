@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Standing Questions</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* self-contained: GitHub Pages serves 404.html at arbitrary paths, so no relative assets */
+:root {
+  --bg: #f6f1e7; --ink: #221e17; --muted: #6e6354;
+  --accent: #a83c18; --code-bg: #ece5d6; --code-ink: #3a342a; --rule: #d8cfbc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16130e; --ink: #e9e1d0; --muted: #9c907a;
+    --accent: #e07e4b; --code-bg: #211c14; --code-ink: #cfc5af; --rule: #332c1f;
+  }
+}
+html { color-scheme: light dark; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.125rem; line-height: 1.65; -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; top: 0; left: 0; right: 0;
+  height: 4px; background: var(--accent);
+}
+main { max-width: 46rem; margin: 0 auto; padding: clamp(3rem, 14vh, 8rem) 1.5rem 4rem; }
+.kicker {
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 2rem;
+}
+h1 { font-size: clamp(2.5rem, 7vw, 4rem); font-weight: 500; line-height: 1.06; margin: 0 0 1.5rem; }
+pre {
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  background: var(--code-bg); color: var(--code-ink);
+  border: 1px solid var(--rule); border-radius: 6px;
+  padding: 1rem 1.2rem; font-size: 0.8rem; line-height: 1.6; overflow-x: auto;
+  margin: 0 0 2.5rem;
+}
+pre .delta { color: var(--accent); font-weight: 500; }
+a { color: var(--ink); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<main>
+  <p class="kicker">Standing Questions &middot; 404</p>
+  <h1>This page could not be re&#8209;derived.</h1>
+  <pre><code>{"q_id":"this-url","<span class="delta">delta":true</span>,"note":"not found in current ground truth - it may have moved, or never existed"}</code></pre>
+  <p><a href="/">&larr; Back to standingquestions.com</a></p>
+</main>
+
+</body>
+</html>

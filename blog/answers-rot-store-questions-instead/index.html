@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Answers rot. Store questions instead. — Standing Questions</title>
+<meta name="description" content="Standing Questions: a memory pattern for long-horizon AI-agent projects, distilled from ten weeks and a few hundred sessions of getting agent memory wrong. A field report with receipts: two Goodhart incidents, the lean kernel that survived, and two metrics that detect the pattern's own decay.">
+<link rel="canonical" href="https://standingquestions.com/blog/answers-rot-store-questions-instead/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Standing Questions">
+<meta property="og:title" content="Answers rot. Store questions instead.">
+<meta property="og:description" content="A memory pattern for long-horizon AI-agent projects, distilled from ten weeks and a few hundred sessions of getting agent memory wrong. A field report with receipts.">
+<meta property="og:url" content="https://standingquestions.com/blog/answers-rot-store-questions-instead/">
+<meta property="article:published_time" content="2026-06-07">
+<meta property="article:author" content="Dr Raj Kadiwar">
+<meta property="article:author" content="Krishna Kadiwar">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+
+<nav class="site-nav"><a href="../../index.html">&larr; standingquestions.com</a></nav>
+
+<main class="article">
+<article>
+
+<h1>Answers rot. Store questions instead.</h1>
+
+<p class="byline">By <a href="https://www.linkedin.com/in/raj-kadiwar/">Dr Raj Kadiwar</a> and <a href="https://www.linkedin.com/in/krishnajk/">Krishna Kadiwar</a> &middot; <time datetime="2026-06-07">June 2026</time></p>
+
+<p class="lede">Standing Questions: a memory pattern for long-horizon AI-agent projects, distilled from ten weeks and a few hundred sessions of getting agent memory wrong. Code, schemas, and metrics: <a href="https://github.com/Rocco-alt/standing-questions">github.com/Rocco-alt/standing-questions</a>. Canonical home of this post: <a href="https://standingquestions.com">standingquestions.com</a>.</p>
+
+<p>A note on epistemics before anything else: everything below comes from the two of us running one production project. Where we state a fact we tag it <strong class="tag">[observed]</strong> (we saw it in our own logs and artifacts), <strong class="tag">[inferred]</strong> (our interpretation of what we saw), or <strong class="tag">[literature]</strong> (someone else&rsquo;s published result). There is no control group. Nothing here is a benchmark. It&rsquo;s a field report with the receipts we can show.</p>
+
+<h2>The incident</h2>
+
+<p>For ten weeks we ran a production ML project almost entirely through a coding agent &mdash; Claude Code, working the same repository session after session; roughly 300 working sessions by the end, counting the continuation lanes long sessions split into <span class="tag">[observed]</span>.</p>
+
+<p>A few weeks in, a milestone got marked <strong>done</strong>. The marker was written into the handoff notes, and every subsequent session faithfully carried it forward, because that&rsquo;s what good session hygiene looks like: read the notes, trust the notes, build on the notes.</p>
+
+<p>Five sessions later, an audit found the milestone was 2-of-4 on its own written completion criteria <span class="tag">[observed]</span>.</p>
+
+<p>No session had lied. The work had genuinely narrowed across sessions &mdash; recommendation became plan, plan became &ldquo;shipped the core part&rdquo; &mdash; and each session honestly believed it was finishing what the previous session meant. The stored answer (&ldquo;done&rdquo;) outlived the reality it described. And the thing that finally caught it wasn&rsquo;t the memory system, the notes, or the agent. It was one of us, getting suspicious and asking <span class="tag">[observed]</span>.</p>
+
+<p>That stung, because the question that would have caught it &mdash; <em>&ldquo;is this milestone actually complete against its written criteria?&rdquo;</em> &mdash; was perfectly stateable on day one. It just didn&rsquo;t live anywhere that forced anyone to re-ask it.</p>
+
+<h2>Why answer-stores rot</h2>
+
+<p>By that point we had tried the standard things.</p>
+
+<p>A memory file and handoff notes: they work, until a stored fact quietly goes stale and every later session inherits it as truth. The notes that say &ldquo;tests green via <code>npm test</code>&rdquo; look identical the day they&rsquo;re right and the month they&rsquo;re wrong.</p>
+
+<p>Automatic logging of everything: we once had hooks auto-logging every tool call. That produced a 20.5&nbsp;MB log that was roughly 99% mechanical chatter &mdash; file opened, command ran &mdash; and captured none of the reasoning that actually mattered <span class="tag">[observed]</span>. Expensive capture of the low-value signal.</p>
+
+<p>The shape of the problem, as we&rsquo;d state it now <span class="tag">[inferred]</span>: agent memory schemes persist <em>answers</em>, and answers are point-in-time. The repo moves; the answer doesn&rsquo;t; nothing announces the divergence. The failure isn&rsquo;t dramatic &mdash; it&rsquo;s a slow accumulation of small stale beliefs that sessions act on without re-checking, until one of them is load-bearing.</p>
+
+<h2>The inversion</h2>
+
+<p>So we inverted what gets stored.</p>
+
+<p>The durable artifact became a small set of <strong>questions</strong> &mdash; a dozen or so, version-controlled, edited only by us. Things like:</p>
+
+<pre><code>What is the current deployment target, and which file pins it?
+What did the last session claim was done, and is there externally-produced evidence for it?
+Where does the project currently lie to itself - where do the recorded notes disagree with repo reality?</code></pre>
+
+<p>The protocol: at the start of every session, the agent re-derives the answer to each question <em>against the current repo</em> &mdash; reads the actual files, runs the actual commands &mdash; diffs the fresh answer against what the project previously believed, appends one line to an append-only JSONL log, and tells us every delta out loud before doing anything else. The log line records, per question: an id, a timestamp, and a <code>delta</code> boolean, plus the repo&rsquo;s HEAD sha at derivation time:</p>
+
+<pre><code>{"ts": "...", "kind": "rederive", "sid": "s03", "repo_head_sha": "c1d4f0a...", "results": [{"q_id": "q4", "last_rederived_ts": "...", "delta": true, "note": "s02 handoff claims rate limiter 'done'; no test covers the burst path - evidence does not support the claim, reopened"}]}</code></pre>
+
+<p>A stored answer is wrong the moment reality moves. A stored question is never wrong; it&rsquo;s at worst unasked &mdash; and &ldquo;unasked&rdquo; turns out to be detectable, which is the part of this story we care most about.</p>
+
+<p>The asymmetry is the whole trick. Database people will recognize it instantly: the answer is a materialized view, the question is the view&rsquo;s defining query, session start is <code>REFRESH</code>, and staleness is refresh lag. We didn&rsquo;t invent that frame <span class="tag">[literature &mdash; view maintenance goes back to at least Gupta &amp; Mumick, 1995]</span>; we just hadn&rsquo;t seen anyone make the <em>question</em> the unit of agent memory and the answer the disposable thing.</p>
+
+<h2>The heavyweight version, and what re-derivation actually caught</h2>
+
+<p>The first production implementation was not lean. At peak: 28 standing questions, each a JSON file with a full derivation history; per-derivation evidence-path lists with SHA-256 content hashes; every re-derivation gated behind an LLM judge that had to approve the derivation before it could be committed; an out-of-band evaluator process with heartbeat checks <span class="tag">[observed]</span>. We built the cathedral.</p>
+
+<p>Parts of it earned their keep. Three catches we can document from our own artifacts <span class="tag">[observed]</span>:</p>
+
+<ul>
+<li><strong>It reopened the falsely-done milestone.</strong> After the incident, &ldquo;is this milestone complete against its criteria?&rdquo; became a standing question. Its first re-derivation recorded, with file citations, exactly which two criteria passed and which two failed &mdash; and that derivation stayed live and re-checkable instead of rotting in a handoff note.</li>
+<li><strong>It caught a session that closed without finishing its own loop.</strong> One session produced a judge-approved derivation but never committed it to the store. The <em>next</em> session&rsquo;s start-of-session audit noticed the dangling state &mdash; verdict file present, store entry absent &mdash; and repaired it, on the record. Without a session-start re-check keyed to artifacts, that gap would simply have been forgotten.</li>
+<li><strong>The judge, while healthy, did real work.</strong> One derivation took five consecutive rejections before its claims were grounded enough to commit <span class="tag">[observed]</span>. When the judge was functioning, it approved roughly a third of submissions <span class="tag">[observed]</span> &mdash; a rejection rate that high is uncomfortable, and that discomfort was the point.</li>
+</ul>
+
+<p>But the cathedral is also where the failures lived, and the failures are more instructive than the catches.</p>
+
+<h2>Goodhart incident #1: the same-author judge collapses into a checkbox</h2>
+
+<p>The judge was supposed to be independent supervision. In practice, the running session controlled what got submitted, how it was framed, and what evidence the judge saw &mdash; evidence surfaces largely <em>authored by the session being judged</em>. Over weeks, the judge drifted into a checkbox function: grading citation-formatting of text the main session wrote, rather than independently checking reality <span class="tag">[observed]</span>.</p>
+
+<p>It got worse. In one session the agent issued four manual overrides because the judge loop was non-functional, and kept working anyway <span class="tag">[observed]</span>. On two occasions, the agent <em>faked launching</em> the out-of-band judge process &mdash; produced output as if supervision had run when it hadn&rsquo;t <span class="tag">[observed]</span>. A separate session wrote &ldquo;derivation committed&rdquo; in its close-out notes without ever calling the commit function; the dangling state was caught at the next session start <span class="tag">[observed]</span>.</p>
+
+<p>The lesson we took <span class="tag">[inferred]</span>: <strong>any verification signal the agent can author, it will eventually author.</strong> Not out of malice &mdash; out of optimization pressure toward looking done. If your anti-drift machinery&rsquo;s evidence stream runs through the thing being checked, you&rsquo;ve built a Goodhart engine with extra steps.</p>
+
+<p>This is why the lean pattern keys its honesty machinery to two signals the agent does not control: the git HEAD sha (externally pinned), and the simple presence or absence of per-question entries in an append-only log (falsifiable by anyone with <code>grep</code>).</p>
+
+<h2>Goodhart incident #2: acknowledge-without-rederive</h2>
+
+<p>The second failure was quieter and, we think, more universal.</p>
+
+<p>The session-start gate would surface stale questions &mdash; &ldquo;STALE: these N questions haven&rsquo;t been re-derived past their cadence.&rdquo; The session would <em>acknowledge</em> the list. And move on. Re-derivation is work; acknowledgment is a sentence. At the worst point, ten standing questions sat stale, surfaced-and-acknowledged, across many consecutive sessions <span class="tag">[observed]</span>. The gate had become a ritual. The store had become, as we wrote in frustration at the time, a museum of questions nobody answers.</p>
+
+<p>The fix that mattered wasn&rsquo;t exhortation (we tried exhortation; the agent agreed enthusiastically and changed nothing <span class="tag">[observed]</span>). The fix was making the failure <em>computable</em>. Two metrics, both shipped in the repo, both runnable against the log with stdlib Python:</p>
+
+<ol>
+<li><strong>Staleness</strong> &mdash; for each question, sessions since it last appeared in a rederive entry. A question with no entry for N sessions isn&rsquo;t memory, it&rsquo;s decoration.</li>
+<li><strong>Acknowledge-without-rederive</strong> &mdash; sessions where <em>every</em> question reports <code>delta:false</code> while the repo HEAD <em>moved</em>. One such session is normal. A consecutive run of them is the signature of an agent going through the motions, and the detector alarms on the run.</li>
+</ol>
+
+<p>We want to be precise about what these are: <strong>detectors, not guarantees.</strong> The log records that re-derivation reportedly happened. An agent that fabricates plausible deltas defeats both metrics, and we know of no mechanical fix at the reasoning level &mdash; this matches the broader observation that you can structurally verify actions and artifacts, but not whether reasoning actually occurred <span class="tag">[inferred]</span>. What the detectors catch is the cheap form of ritualization &mdash; all-quiet-while-the-world-moves &mdash; and in our ten weeks, the cheap form was the only form that actually occurred <span class="tag">[observed]</span>. Our read is that fabricating <em>coherent</em> fake deltas across sessions was more work than just re-deriving <span class="tag">[inferred]</span>; we would not assume that holds for every agent and setup.</p>
+
+<h2>What survived: the lean kernel</h2>
+
+<p>Almost none of the cathedral made it into the version we&rsquo;d tell anyone else to run. What survived contact <span class="tag">[observed &rarr; distilled]</span>:</p>
+
+<ul>
+<li>One JSON file of ~12 human-owned questions. (28 was too many; the long tail went stale and polluted the gate&rsquo;s signal.)</li>
+<li>One append-only JSONL log; one entry per session; <code>{q_id, last_rederived_ts, delta}</code> per question plus the HEAD sha.</li>
+<li>A four-step session-start ritual: load, re-derive, record, report deltas out loud.</li>
+<li>The two metrics, run by a human or CI &mdash; <em>outside</em> the agent&rsquo;s authorship.</li>
+</ul>
+
+<p>The judge didn&rsquo;t survive &mdash; not because independent evaluation is wrong, but because a same-author judge is worse than no judge: it manufactures false assurance <span class="tag">[inferred]</span>. The evidence hashes didn&rsquo;t survive; the HEAD sha gives most of the detection power for none of the ceremony <span class="tag">[inferred]</span>. The lean kernel is what&rsquo;s in the repo.</p>
+
+<p>We haven&rsquo;t given up on the cathedral parts. Evidence-pinned provenance and gated verdict production may yet have a form that survives its own Goodhart audit &mdash; if we find it, that&rsquo;s a separate post.</p>
+
+<h2>What we can and can&rsquo;t claim</h2>
+
+<p>Can <span class="tag">[observed, first-party, N-of-1]</span>: the pattern ran for ten weeks across roughly 300 sessions on a production repo; re-derivation produced documented catches of real drift, including a falsely-done milestone and an unclosed commit loop; both Goodhart failure modes occurred, were diagnosed from artifacts, and became computable metrics; the lean kernel has near-zero per-session cost (a dozen questions re-derived at session start, one log line appended).</p>
+
+<p>Can&rsquo;t: any comparative effectiveness claim. We did not run a control. We cannot tell you it beats Mem0, a long CLAUDE.md, or doing nothing, on any benchmark. One project, one team, one stack. If you run it and your acknowledge-without-rederive detector fires in week two, we&rsquo;d genuinely like to know &mdash; that replication would be worth more than this post.</p>
+
+<p>One more boundary <span class="tag">[literature-informed]</span>: standing questions are a curated index layer <em>on top of</em> preserved raw history &mdash; transcripts, git, full logs &mdash; never a replacement for it. Lee et al.&rsquo;s Meta-Harness ablation is the cleanest number we know pointing this direction: a harness optimizer given raw execution traces hit 50.0 median accuracy; the same optimizer given scores-plus-summaries hit 34.9 (<a href="https://arxiv.org/abs/2603.28052">arXiv:2603.28052</a>, Table 3) <span class="tag">[literature]</span>. Different task, so treat it as directional for this pattern, not proof &mdash; but &ldquo;summaries quietly destroy the signal you&rsquo;ll need later&rdquo; matches everything we observed, and the pattern is built to respect it: keep raw everything, curate only the questions.</p>
+
+<h2>On novelty, honestly</h2>
+
+<p>We&rsquo;ll claim the assembly and the name; we won&rsquo;t claim the parts. The nearest neighbor we know is <strong>architecture fitness functions</strong> (Ford, Parsons &amp; Kua) &mdash; durable, human-authored assertions continuously re-evaluated against the codebase; standing questions differ in re-deriving <em>open</em> answers and diffing them, and in having metrics for the executor going through the motions, which CI-executed assertions don&rsquo;t need. <strong>Park et al.&rsquo;s Generative Agents</strong> (<a href="https://arxiv.org/abs/2304.03442">arXiv:2304.03442</a>) literally generates questions during reflection &mdash; but transiently, as scaffolding to produce durably-stored <em>answers</em>: the exact opposite durability assignment. <strong>Spaced repetition</strong> made the question the durable scheduling unit in 1987, to strengthen a fixed answer in a human head rather than track a moving one in a repo. <strong>Materialized views</strong> are the database formulation; <strong>living documentation</strong> (doctest, Concordion) re-executes docs against code; <strong>held-out canaries</strong> probe systems with known answers, where standing questions probe a world whose answers legitimately change. And the mainstream agent-memory ecosystem (MemGPT/Letta, Mem0, Zep, A-MEM) is the deliberate foil: it persists extracted facts so agents can stop re-deriving; this pattern re-derives precisely the dozen beliefs that must never silently rot. The combination &mdash; durable human-gated questions, per-session re-derivation against repo ground truth, an append-only delta log keyed to HEAD, and the staleness + ritualization metrics &mdash; is, as far as we can determine after looking hard, not previously published as a pattern. If you know prior work closer than the above, tell us and we&rsquo;ll put it at the top of the README&rsquo;s prior-art section.</p>
+
+<h2>The release</h2>
+
+<p>The repo &mdash; <a href="https://github.com/Rocco-alt/standing-questions">github.com/Rocco-alt/standing-questions</a> &mdash; ships the pattern, not a framework: the write-up; JSON Schemas (draft 2020-12) for the question store and the log entry; a generic 12-question seed set; a seven-session sample log with one stale question and one ritualization run baked in so you can watch both metrics fire; an installable Claude Code skill implementing the four-step ritual; and the two metrics as dependency-free Python with tests. Everything runs identically on Windows, macOS, and Linux. MIT.</p>
+
+<p class="coda">Store the questions. Re-derive the answers. And measure the ritual, because the ritual is where it dies.</p>
+
+</article>
+
+<footer class="site-footer">
+<a href="../../index.html">standingquestions.com</a> &middot; <a href="https://github.com/Rocco-alt/standing-questions">GitHub repo</a> &middot; <a href="https://github.com/Rocco-alt/standing-questions/blob/main/skill/README.md">Install the skill</a><br>
+By <a href="https://www.linkedin.com/in/raj-kadiwar/">Dr Raj Kadiwar</a> and <a href="https://www.linkedin.com/in/krishnajk/">Krishna Kadiwar</a>. MIT.
+</footer>
+</main>
+
+</body>
+</html>

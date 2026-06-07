@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standing Questions — Store the questions. Re-derive the answers.</title>
+<meta name="description" content="A memory pattern for long-horizon AI-agent projects: store a dozen human-owned questions, re-derive the answers against ground truth every session, and measure when the ritual decays.">
+<link rel="canonical" href="https://standingquestions.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Standing Questions">
+<meta property="og:title" content="Standing Questions — Store the questions. Re-derive the answers.">
+<meta property="og:description" content="A memory pattern for long-horizon AI-agent projects: store a dozen human-owned questions, re-derive the answers against ground truth every session, and measure when the ritual decays.">
+<meta property="og:url" content="https://standingquestions.com/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<main class="landing">
+  <p class="kicker reveal">Standing Questions &middot; a memory pattern for long-horizon AI agents</p>
+
+  <h1 class="hero reveal">Store the questions.<br><span class="rederive">Re&#8209;derive</span> the answers.</h1>
+
+  <p class="pitch reveal">Agent memory schemes persist answers, and answers rot silently as the repo moves on. Standing Questions inverts the store: a dozen human-owned questions are the durable artifact, every session re-derives the answers against current ground truth, and two small metrics detect when the ritual itself decays.</p>
+
+  <div class="log-sample reveal">
+    <p class="log-caption">context/rederive_log.jsonl &mdash; one line per session, append-only</p>
+    <pre><code>{<span class="key">"kind"</span>:"rederive",<span class="key">"sid"</span>:"s03",<span class="key">"repo_head_sha"</span>:"c1d4f0a&hellip;",<span class="key">"results"</span>:[&hellip;,{<span class="key">"q_id"</span>:"q4",<span class="delta">"delta":true</span>,<span class="key">"note"</span>:"handoff claims rate limiter 'done'; no test covers the burst path - reopened"}]}<span class="cursor"></span></code></pre>
+  </div>
+
+  <nav class="actions reveal" aria-label="Primary">
+    <a class="btn btn-primary" href="blog/answers-rot-store-questions-instead/index.html">Read the field report</a>
+    <a class="btn" href="https://github.com/Rocco-alt/standing-questions">GitHub repo &#8599;</a>
+    <a class="btn" href="https://github.com/Rocco-alt/standing-questions/blob/main/skill/README.md">Install the skill &#8599;</a>
+  </nav>
+
+  <footer class="site-footer reveal">
+    By <a href="https://www.linkedin.com/in/raj-kadiwar/">Dr Raj Kadiwar</a> and <a href="https://www.linkedin.com/in/krishnajk/">Krishna Kadiwar</a>.<br>
+    MIT-licensed. Plain HTML &mdash; no framework, no build step.
+  </footer>
+</main>
+
+</body>
+</html>
