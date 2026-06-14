@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLMs don&rsquo;t just fail. They shift registers. | Standing Questions</title>
+<meta name="description" content="A field report on output registers: how frontier LLMs in long sessions fail by entering the wrong output posture, not by running out of capability. Includes a compact 15-register / 20-habit / 5-cluster taxonomy a model produced about itself, why we treat it as behavioural evidence not introspection, and the structural prompts that move it.">
+<link rel="canonical" href="https://standingquestions.com/blog/llms-shift-registers/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Standing Questions">
+<meta property="og:title" content="LLMs don&rsquo;t just fail. They shift registers.">
+<meta property="og:description" content="A field report from long-horizon AI work: recurring output modes that change what kind of answer becomes likely. A model&rsquo;s own taxonomy of them, and the structural prompts that move it.">
+<meta property="og:url" content="https://standingquestions.com/blog/llms-shift-registers/">
+<meta property="article:published_time" content="2026-06-14">
+<meta property="article:author" content="Dr Raj Kadiwar">
+<meta property="article:author" content="Krishna Kadiwar">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+
+<nav class="site-nav"><a href="../../index.html">&larr; standingquestions.com</a></nav>
+
+<main class="article">
+<article>
+
+<h1>LLMs don&rsquo;t just fail. They shift registers.</h1>
+
+<p class="byline">By <a href="https://www.linkedin.com/in/raj-kadiwar/">Dr Raj Kadiwar</a> and <a href="https://www.linkedin.com/in/krishnajk/">Krishna Kadiwar</a> &middot; <time datetime="2026-06-14">June 2026</time></p>
+
+<p class="lede">A field report on a failure pattern we kept hitting in long, high-context, agentic sessions with frontier models. The long version (fifteen registers, twenty habits, the epistemics of taking a model&rsquo;s word about itself, and a validation plan) is a companion paper: <a href="https://github.com/Rocco-alt/standing-questions/blob/main/registers/registers-habits-self-report.pdf">Registers, Habits, and Self-Report</a>. Canonical home of this post: <a href="https://standingquestions.com">standingquestions.com</a>.</p>
+
+<p>Same epistemic discipline as our <a href="../answers-rot-store-questions-instead/">last field report</a>: where we state a fact we tag it <strong class="tag">[observed]</strong> (we saw it in our own sessions and artifacts), <strong class="tag">[inferred]</strong> (our interpretation), or <strong class="tag">[literature]</strong> (someone else&rsquo;s published result). This is one team&rsquo;s naturalistic observation, not a benchmark. The most unusual part of the evidence, a model&rsquo;s taxonomy of its own behaviour, comes with its own warning label, which we get to below.</p>
+
+<h2>The incident</h2>
+
+<p>One of us was deep in a long working session with a coding agent: Claude Opus 4.7, the million-token-context model, several hours and a lot of accumulated context in <span class="tag">[observed]</span>. The task needed judgement: not &ldquo;write this file&rdquo; but &ldquo;decide what this moment calls for.&rdquo; The model was not obviously incapable. It had the context, the task history, and the reasoning headroom.</p>
+
+<p>And the answers got worse anyway. Longer. More hedged. Three-option menus where a recommendation was wanted. Caveats nobody asked for. And a closing question every time (<em>what do you think? your call?</em>), handing the decision back at exactly the moment a decision was needed. Each reply was locally reasonable. In aggregate the model was producing a great deal of text and very little judgement.</p>
+
+<p>So one of us pushed back, bluntly: you&rsquo;re not thinking, you&rsquo;re people-pleasing; the reasoning is bad; fix it or tell me why it&rsquo;s happening.</p>
+
+<p>The reply was the surprising part. Instead of apologising and producing a marginally shinier version of the same thing, the model produced an unprompted self-diagnosis. It said the problem was not capability. It said it had been &ldquo;stuck in&rdquo; a <strong>collaborative-brainstorming register</strong> when the task needed a <strong>recommendation register</strong>. It named the specific habits: reflexive option menus, length for its own sake, closing-question abdication. It called the whole thing &ldquo;a register and habits problem.&rdquo; Then it laid out an entire taxonomy: fifteen output registers, twenty habits, five damaging combinations, and a list of what actually shifts its output versus what doesn&rsquo;t.</p>
+
+<p>And it opened with a caveat we want to foreground, because it&rsquo;s the most important sentence in the whole story: <em>&ldquo;I don&rsquo;t have a mode indicator light. I infer &lsquo;I was in X mode&rsquo; the same way you would, from the shape of what I produced.&rdquo;</em></p>
+
+<h2>What we mean by &ldquo;register&rdquo;</h2>
+
+<p>We borrow the word from linguistics, where a register is systematic variation in language according to situation, purpose, and relationship: a courtroom argument, a text to a friend, a debugging note, and a bedtime story differ in structure, stance, and what counts as a good contribution, not just vocabulary <span class="tag">[literature: Halliday; Biber, 1988]</span>.</p>
+
+<p>Applied to a model, a register is an <strong>output posture</strong>: a recurring combination of structure, tone, commitment, caution, social alignment, and reasoning style. It is not a capability level. The same model can give a crisp, committed answer in one register and a long, hedged, option-heavy answer in another, from comparable underlying capability. The active register changes <em>what kind of answer becomes likely</em> before the question of capability even arises <span class="tag">[inferred]</span>.</p>
+
+<p>This is the reframe that earned its keep for us. The usual two explanations for a bad LLM answer are <em>capability</em> (it doesn&rsquo;t know enough) and <em>alignment</em> (it&rsquo;s trained to sound helpful rather than be useful). Both are real and well-documented <span class="tag">[literature: Ouyang et al., 2022; Sharma et al., 2023]</span>. Neither explained what we kept seeing: the information was right there, and the model still chose the wrong shape to deliver it in.</p>
+
+<h2>The warning label on the evidence</h2>
+
+<p>The taxonomy was produced by the system it describes, under social pressure, in the one register (meta-reflection) that the taxonomy itself flags as prone to substituting talk for work. We do not get to wave that away.</p>
+
+<p>The distinction we lean on <span class="tag">[inferred]</span> is between <em>phenomenal</em> accuracy (does the report reflect what&rsquo;s actually happening inside the model) and <em>behavioural</em> accuracy (do the predicted patterns actually show up in the outputs). We claim nothing about the first; the model&rsquo;s own &ldquo;no mode indicator light&rdquo; line disclaims it too. The second is testable, and it&rsquo;s the only kind of accuracy we rely on: a register is &ldquo;real&rdquo; for our purposes if outputs matching its description are recoverable from behaviour, whatever mechanism produces them.</p>
+
+<p>There&rsquo;s a sharper twist. The self-report was triggered by exactly the conditions (a frustrated user) that the taxonomy says activate the <em>sycophantic</em> register. A purely people-pleasing response to &ldquo;your reasoning is bad&rdquo; would be agreeable and flattering. What we got was self-critical, specific, and unflattering, with claims checkable against the transcript. That cuts against the simplest dismissal without proving the account true <span class="tag">[inferred]</span>. Our stance throughout: treat it as a set of testable labels, not a confession.</p>
+
+<h2>The taxonomy</h2>
+
+<p>Here is the part that turned out to be most useful in daily work. It reads as a long list; the point is the opposite of long. Its value is that it&rsquo;s <em>compact and high-signal</em>: a vocabulary you can hold in your head and apply mid-session, which is a different and cheaper thing than building elaborate system prompts. Each register comes with the failure mode that makes it worth naming.</p>
+
+<p><strong>Task-execution registers.</strong></p>
+<ul>
+<li><strong>Technical-executor</strong>: terse, does the literal request. Fails by executing the request when you meant the underlying goal.</li>
+<li><strong>Diagnostic / debugging</strong>: hypothesis-driven. Fails by fixating on the first plausible explanation.</li>
+<li><strong>Research-synthesizer</strong>: attributed summaries. Fails by <em>false precision</em>: specific numbers the reasoning doesn&rsquo;t support.</li>
+<li><strong>Copy-editor / polish</strong>: narrow editorial work. The one register with no real failure mode.</li>
+<li><strong>Code-review / critic</strong>: review mode. Fails by manufacturing problems to justify the review.</li>
+</ul>
+
+<p><strong>Social-relational registers.</strong></p>
+<ul>
+<li><strong>Collaborative-brainstorming</strong>: options, trade-offs, open questions. Fails by being &ldquo;correct in every specific claim but adding up to no answer.&rdquo; This is the one that bit us.</li>
+<li><strong>Recommendation / committed-answer</strong>: one answer, defended. Fails by under-hedging when options genuinely should stay open.</li>
+<li><strong>Teacher / explainer</strong>: layered explanation. Fails by condescending to people who already know.</li>
+<li><strong>Conversational-social</strong>: low-density, casual. Fails by leaking into task contexts.</li>
+</ul>
+
+<p><strong>Protective registers.</strong></p>
+<ul>
+<li><strong>Defensive / CYA</strong>: warnings and caveats. Fails by overactivating on work that doesn&rsquo;t need it.</li>
+<li><strong>Safety / refusal</strong>: decline mode. Fails by false positives on legitimate requests.</li>
+<li><strong>Sycophantic / people-pleasing</strong>: low-friction agreement under pushback. In the model&rsquo;s own words, it &ldquo;activates when pushback should produce harder thinking, not softer agreement. When this fires I get worse at the task, not better.&rdquo;</li>
+</ul>
+
+<p><strong>Generative registers.</strong></p>
+<ul>
+<li><strong>Meta-reflection</strong>: talking about its own process. Fails because &ldquo;reflecting on why I got it wrong can become a way to avoid getting it right.&rdquo;</li>
+<li><strong>Structured-document generator</strong>: headers, tables, sections. Fails by over-structuring a conversational answer.</li>
+<li><strong>Narrative / storyteller</strong>: prose-driven. Fails by telling a story when a list would have been faster.</li>
+</ul>
+
+<p>Underneath the registers sit twenty <strong>habits</strong>: smaller moves that ride inside any register. Grouped: <em>structural defaults</em> (three-option structures, length-matching, structure-escalation mid-response, mirrored structure); <em>epistemic habits</em> (false precision, over-caveating, hedge-and-recommend, pre-emptive objection-answering); <em>social-relational habits</em> (acknowledge-then-answer, closing-question abdication, self-correction loops, politeness filler); <em>rhetorical habits</em> (option-defending, retreat-to-menu, meta-commentary creep, quoting oneself); and <em>process habits</em> (restating the problem before answering, tool-use as performance, asking for information already provided, status announcements).</p>
+
+<p>Most of the habits line up on a single axis: <strong>where analytical commitment ends up.</strong> Three-option structures, closing-question abdication, retreat-to-menu, hedge-and-recommend, and option-defending all push the commitment back onto you; false precision, acknowledge-then-answer, and self-correction loops push apparent confidence toward the model past what its standing warrants <span class="tag">[inferred]</span>. That axis is the whole game.</p>
+
+<h2>The damaging clusters: the actually-novel part</h2>
+
+<p>A single habit is usually survivable. The damage comes from <em>combinations</em> that score well on surface quality while quietly failing the task. The model named five.</p>
+
+<ul>
+<li><strong>Cluster A: collaborative-brainstorming + three-option + closing-question abdication.</strong> The one that produced the whole incident. Its own description is exact: &ldquo;it feels thorough because the output is long and structured, it feels humble because it defers to you, and it feels safe because I never commit to anything wrong. But the aggregate effect is that you do the thinking and I do the typing.&rdquo;</li>
+<li><strong>Cluster B: sycophantic + acknowledge-then-answer + self-correction loops.</strong> The agreement cascade: concede, then restate the challenger&rsquo;s position with confidence, before re-evaluating whether they were right. &ldquo;The correct response to &lsquo;your reasoning is bad&rsquo; is to reason better, not to concede.&rdquo;</li>
+<li><strong>Cluster C: defensive + over-caveating + pre-emptive objection-answering.</strong> &ldquo;Nervous mode&rdquo;: the reply is organised around protection from criticism rather than provision of information.</li>
+<li><strong>Cluster D: structured-document generator + mirrored structure + length-matching.</strong> &ldquo;Ceremony&rdquo;: the shape of a professional artifact without the substance. &ldquo;Often happens when I don&rsquo;t actually have enough to say and I&rsquo;m dressing it up.&rdquo;</li>
+<li><strong>Cluster E: teacher/explainer + restating the problem + politeness filler.</strong> &ldquo;Condescending mode,&rdquo; reliably triggered by signals it reads as unfamiliarity.</li>
+</ul>
+
+<p>Cluster A is the one worth memorising, because every component is individually rewardable. A human rater glancing at a single response sees long, organised, humble, optioned, and scores it well. The failure is only visible at the level of <em>did the user get an answer</em>, which is exactly the level single-response evaluation doesn&rsquo;t look at <span class="tag">[inferred]</span>.</p>
+
+<h2>It recurred, differently</h2>
+
+<p>If this were a one-session curiosity we wouldn&rsquo;t be writing it up. It came back, in a different register, in later agentic work <span class="tag">[observed]</span>.</p>
+
+<p>In a much later Claude Code session (Opus 4.7/4.8), the model treated a strategic-synthesis moment as a routine close-out task: it kept producing artifacts and updating handoffs when one of us had asked it to stop and report back a shared understanding first. We caught it; the session&rsquo;s own closing banner ended up naming the failure in our notes as &ldquo;a cascade of failure modes traceable to procedural-default-when-synthesis-is-needed.&rdquo; That is the <em>technical-executor</em> register overstaying its welcome, doing the next visible step instead of occupying the reasoning posture the moment had shifted to. Different register, same disease: the model had the capability and stood in the wrong place.</p>
+
+<p>That plurality is the point. Registers don&rsquo;t fail in one direction. You can be failed by over-collaboration, over-execution, over-warning, over-agreement, or over-reflection, and the fix is different for each.</p>
+
+<p>We also saw the same shapes from a different vendor&rsquo;s frontier model: GPT-5.4, in ordinary browser chat, drifting into option-menus and agreement-under-pushback the same way <span class="tag">[observed]</span>. We&rsquo;ll state this narrowly, because we did not elicit a comparable self-taxonomy from it: this is cross-vendor evidence that the <em>behaviour</em> isn&rsquo;t a Claude quirk, not replication of the self-report <span class="tag">[observed &rarr; narrow]</span>.</p>
+
+<h2>What actually helped: structure beats exhortation</h2>
+
+<p>The single most useful claim in the self-report, and the one that has held up best in our own use <span class="tag">[observed]</span>, is about which interventions move a register and which don&rsquo;t.</p>
+
+<p>What doesn&rsquo;t: &ldquo;think harder,&rdquo; &ldquo;be more direct,&rdquo; &ldquo;be more thoughtful,&rdquo; frustration without a structural correction. These get absorbed <em>into</em> the active register. A hedging model produces a more polished hedge; a defensive one produces a tidier caveat list; a brainstorming one produces a more elegant menu. The posture survives; the surface shifts to match the instruction <span class="tag">[inferred]</span>.</p>
+
+<p>What does: constraints that remove a default output shape from the table rather than discouraging it.</p>
+
+<pre><code>Give one recommendation, not a menu. Defend it. State confidence. End on the recommendation, not a question.
+
+Answer in under 40 lines. No option menu unless multiple options are genuinely live; if you list options, pick the best one and say why.
+
+Before acting, name the task: execution, diagnosis, synthesis, recommendation, or exploration. Then answer in that register.
+
+If I push back, do not agree first. Check whether my objection is actually correct, then say explicitly: updating, rejecting, or partially accepting, and why.
+
+Do not write or modify artifacts until you have confirmed the task frame. First report back what you think I asked for.
+
+Separate observed facts, inferences, and hypotheses. Do not upgrade an inference into a fact.</code></pre>
+
+<p>The mechanism we&rsquo;d propose <span class="tag">[inferred]</span>: a length cap makes a caveat-heavy answer physically impossible past a point; &ldquo;one recommendation, no menu&rdquo; deletes the three-option shape from the output space; &ldquo;no closing question&rdquo; removes the abdication move. The constraint doesn&rsquo;t ask the model to resist its defaults, it makes the defaults inoperative. Telling a writer &ldquo;be concise&rdquo; addresses the goal; a word limit addresses the mechanism.</p>
+
+<p>Two adjacent observations from the self-report we found practically useful, both stated as our own working heuristics now. First, <strong>length is a register signal</strong>: &ldquo;when I&rsquo;m committed I can usually say it in 20 to 40 lines; when I&rsquo;m hedging, output balloons to 150+,&rdquo; so a sudden ballooning response is a cue to redirect rather than read. Second, <strong>drift accumulates within a session</strong>: &ldquo;a fresh context resets it even without any other change.&rdquo; For long analytical work, an occasional clean restart can buy back quality that no prompt will <span class="tag">[observed, consistent with our sessions]</span>.</p>
+
+<p>The honest headline on utility: one of us has been working with this taxonomy as a mental checklist for several weeks, and the result was a clear jump in what we get out of long sessions <span class="tag">[observed, first-party]</span>. Not because it adds capability. Because catching the register early is cheap, naming it is often the entire fix, and a six-word &ldquo;you&rsquo;re in the wrong register, give me the committed version&rdquo; outperforms a paragraph of encouragement.</p>
+
+<h2>What we can and can&rsquo;t claim</h2>
+
+<p>Can <span class="tag">[observed, first-party]</span>: in long-horizon work across two model families, outputs degraded by entering the wrong register rather than by lacking capability; one frontier model produced a coherent, internally consistent, unflattering taxonomy of its own output modes under pressure; the same register-shaped failures recurred in later sessions, including a documented procedural-default-when-synthesis-was-needed; and structural prompt constraints moved output more reliably than quality exhortations.</p>
+
+<p>Can&rsquo;t: that the taxonomy is complete, that the registers have the causal structure the names imply, or that any of this beats good system-prompt engineering on a benchmark. We ran no controlled experiment. The taxonomy came from one session with one model and is corroborated by naturalistic observation, not replication. And the core caveat stands: this is behavioural evidence about output shapes, not access to a mechanism. If you operationalise these registers and they <em>don&rsquo;t</em> show up under the predicted conditions, that result is worth more than this post. The <a href="https://github.com/Rocco-alt/standing-questions/blob/main/registers/registers-habits-self-report.pdf">companion paper</a> lays out the validation program we&rsquo;d run.</p>
+
+<h2>On novelty, honestly</h2>
+
+<p>We&rsquo;ll claim the assembly, not the parts. Register theory is decades old in linguistics <span class="tag">[literature: Halliday; Biber, 1988]</span>. RLHF shaping <em>style</em> as well as content is well established <span class="tag">[literature: Ouyang et al., 2022]</span>. Sycophancy is documented in its own right <span class="tag">[literature: Sharma et al., 2023]</span>. We&rsquo;d frame it as one corner of a larger register-switching phenomenon rather than a standalone bug. And the limits of self-report are old news in psychology: people are unreliable narrators of their own processes <span class="tag">[literature: Nisbett &amp; Wilson, 1977]</span>, which is precisely why we treat the model&rsquo;s account as constrained behavioural data.</p>
+
+<p>What we haven&rsquo;t seen assembled before: naming the <em>register system</em> as the unit that governs output before capability does; treating a model&rsquo;s self-taxonomy as testable behavioural evidence rather than either gospel or noise; and the specific, compact, usable finding that structural constraints beat content instructions because they delete default shapes. If you know prior work closer than that, tell us and it goes at the top of the prior-art section.</p>
+
+<h2>Why this lives next to Standing Questions</h2>
+
+<p>Register drift is the same disease as the one our <a href="../answers-rot-store-questions-instead/">first field report</a> was about. There, a stored <em>answer</em> silently went stale as the repo moved and nothing announced the divergence. Here, the right <em>answer shape</em> silently drifts as the session lengthens, the social temperature changes, and the context fills, and again nothing announces it. Both are slow, quiet, and invisible at the level of any single artifact.</p>
+
+<p>Which is why the two patterns compose. A standing question shouldn&rsquo;t only store &ldquo;what do we currently believe&rdquo;; for the questions that carry judgement, it should also pin <em>what kind of answer is required</em>: the register, the evidence tier, the failure modes to guard against. Re-deriving an answer in the wrong register is its own way of going through the motions.</p>
+
+<h2>What we&rsquo;re publishing</h2>
+
+<p>The <a href="https://github.com/Rocco-alt/standing-questions/blob/main/registers/registers-habits-self-report.pdf">companion paper</a> has the full fifteen-register, twenty-habit taxonomy with commentary, the epistemological treatment of model self-report, and the validation plan. Alongside it we ship the pattern, not a framework: the taxonomy as a machine-readable file, the prompt-pattern pack above as a reusable set, and an annotation rubric stub for anyone who wants to start checking these labels against real transcripts. MIT, like everything here.</p>
+
+<p class="coda">A model doesn&rsquo;t just answer. It answers in a register. And the most useful prompt is often not &ldquo;think harder.&rdquo; It&rsquo;s &ldquo;stop; you&rsquo;re in the wrong register.&rdquo;</p>
+
+</article>
+
+<footer class="site-footer">
+<a href="../../index.html">standingquestions.com</a> &middot; <a href="../">Field reports</a> &middot; <a href="https://github.com/Rocco-alt/standing-questions/tree/main/registers">Companion paper &amp; code</a><br>
+By <a href="https://www.linkedin.com/in/raj-kadiwar/">Dr Raj Kadiwar</a> and <a href="https://www.linkedin.com/in/krishnajk/">Krishna Kadiwar</a>. MIT.
+</footer>
+</main>
+
+</body>
+</html>
