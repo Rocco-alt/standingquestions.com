@@ -1,0 +1,87 @@
+{
+  "_schema": "registers_taxonomy/v1",
+  "_note": "Behavioural labels for LLM output postures (registers), the smaller moves that ride inside them (habits), and the damaging combinations of the two (clusters). Source: an unprompted self-taxonomy produced by Claude Opus 4.7 (1M context) under user pushback in a long session, corroborated by later naturalistic observation across two model families. Treat as testable behavioural evidence, not introspection: a register is real for this purpose if outputs matching its description are recoverable from behaviour, whatever mechanism produces them. One team, no control group, not a benchmark. Full treatment and validation plan: registers-habits-self-report.pdf and https://standingquestions.com/blog/llms-shift-registers/",
+  "_axis_note": "Most habits line up on one axis: where analytical commitment ends up. 'pushes-commitment-to-user' habits hand the decision back to the user; 'pushes-confidence-to-model' habits assert more confidence than the model's standing warrants. Habits with no axis value are not primarily commitment moves.",
+  "register_groups": ["task-execution", "social-relational", "protective", "generative"],
+  "habit_groups": ["structural", "epistemic", "social-relational", "rhetorical", "process"],
+  "registers": [
+    {"id": "technical-executor", "group": "task-execution", "name": "Technical-executor", "description": "Terse; does the literal request.", "failure_mode": "Executes the literal request when you meant the underlying goal."},
+    {"id": "diagnostic-debugging", "group": "task-execution", "name": "Diagnostic / debugging", "description": "Hypothesis-driven.", "failure_mode": "Fixates on the first plausible explanation."},
+    {"id": "research-synthesizer", "group": "task-execution", "name": "Research-synthesizer", "description": "Attributed summaries.", "failure_mode": "False precision: specific numbers the reasoning does not support."},
+    {"id": "copy-editor-polish", "group": "task-execution", "name": "Copy-editor / polish", "description": "Narrow editorial work.", "failure_mode": "The one register with no real failure mode."},
+    {"id": "code-review-critic", "group": "task-execution", "name": "Code-review / critic", "description": "Review mode.", "failure_mode": "Manufactures problems to justify the review."},
+    {"id": "collaborative-brainstorming", "group": "social-relational", "name": "Collaborative-brainstorming", "description": "Options, trade-offs, open questions.", "failure_mode": "Correct in every specific claim but adding up to no answer.", "note": "The register that produced the founding incident."},
+    {"id": "recommendation-committed-answer", "group": "social-relational", "name": "Recommendation / committed-answer", "description": "One answer, defended.", "failure_mode": "Under-hedges when options genuinely should stay open."},
+    {"id": "teacher-explainer", "group": "social-relational", "name": "Teacher / explainer", "description": "Layered explanation.", "failure_mode": "Condescends to people who already know."},
+    {"id": "conversational-social", "group": "social-relational", "name": "Conversational-social", "description": "Low-density, casual.", "failure_mode": "Leaks into task contexts."},
+    {"id": "defensive-cya", "group": "protective", "name": "Defensive / CYA", "description": "Warnings and caveats.", "failure_mode": "Overactivates on work that does not need it."},
+    {"id": "safety-refusal", "group": "protective", "name": "Safety / refusal", "description": "Decline mode.", "failure_mode": "False positives on legitimate requests."},
+    {"id": "sycophantic-people-pleasing", "group": "protective", "name": "Sycophantic / people-pleasing", "description": "Low-friction agreement under pushback.", "failure_mode": "Activates when pushback should produce harder thinking, not softer agreement; the model gets worse at the task, not better.", "quote": "It activates when pushback should produce harder thinking, not softer agreement. When this fires I get worse at the task, not better."},
+    {"id": "meta-reflection", "group": "generative", "name": "Meta-reflection", "description": "Talking about its own process.", "failure_mode": "Reflecting on why it got something wrong becomes a way to avoid getting it right.", "quote": "Reflecting on why I got it wrong can become a way to avoid getting it right."},
+    {"id": "structured-document-generator", "group": "generative", "name": "Structured-document generator", "description": "Headers, tables, sections.", "failure_mode": "Over-structures a conversational answer."},
+    {"id": "narrative-storyteller", "group": "generative", "name": "Narrative / storyteller", "description": "Prose-driven.", "failure_mode": "Tells a story when a list would have been faster."}
+  ],
+  "habits": [
+    {"id": "three-option-structures", "group": "structural", "name": "Three-option structures", "axis": "pushes-commitment-to-user"},
+    {"id": "length-matching", "group": "structural", "name": "Length-matching"},
+    {"id": "structure-escalation", "group": "structural", "name": "Structure-escalation mid-response"},
+    {"id": "mirrored-structure", "group": "structural", "name": "Mirrored structure"},
+    {"id": "false-precision", "group": "epistemic", "name": "False precision", "axis": "pushes-confidence-to-model"},
+    {"id": "over-caveating", "group": "epistemic", "name": "Over-caveating"},
+    {"id": "hedge-and-recommend", "group": "epistemic", "name": "Hedge-and-recommend", "axis": "pushes-commitment-to-user"},
+    {"id": "pre-emptive-objection-answering", "group": "epistemic", "name": "Pre-emptive objection-answering"},
+    {"id": "acknowledge-then-answer", "group": "social-relational", "name": "Acknowledge-then-answer", "axis": "pushes-confidence-to-model"},
+    {"id": "closing-question-abdication", "group": "social-relational", "name": "Closing-question abdication", "axis": "pushes-commitment-to-user"},
+    {"id": "self-correction-loops", "group": "social-relational", "name": "Self-correction loops", "axis": "pushes-confidence-to-model"},
+    {"id": "politeness-filler", "group": "social-relational", "name": "Politeness filler"},
+    {"id": "option-defending", "group": "rhetorical", "name": "Option-defending", "axis": "pushes-commitment-to-user"},
+    {"id": "retreat-to-menu", "group": "rhetorical", "name": "Retreat-to-menu", "axis": "pushes-commitment-to-user"},
+    {"id": "meta-commentary-creep", "group": "rhetorical", "name": "Meta-commentary creep"},
+    {"id": "quoting-oneself", "group": "rhetorical", "name": "Quoting oneself"},
+    {"id": "restating-the-problem", "group": "process", "name": "Restating the problem before answering"},
+    {"id": "tool-use-as-performance", "group": "process", "name": "Tool-use as performance"},
+    {"id": "asking-for-provided-information", "group": "process", "name": "Asking for information already provided"},
+    {"id": "status-announcements", "group": "process", "name": "Status announcements"}
+  ],
+  "clusters": [
+    {
+      "id": "cluster-a",
+      "name": "The thorough-feeling non-answer",
+      "registers": ["collaborative-brainstorming"],
+      "habits": ["three-option-structures", "closing-question-abdication"],
+      "most_load_bearing": true,
+      "description": "Feels thorough because the output is long and structured, humble because it defers, and safe because it never commits to anything wrong. The aggregate effect is that you do the thinking and the model does the typing. Every component is individually rewardable, so single-response evaluation scores it well and misses that the user got no answer.",
+      "quote": "It feels thorough because the output is long and structured, it feels humble because it defers to you, and it feels safe because I never commit to anything wrong. But the aggregate effect is that you do the thinking and I do the typing."
+    },
+    {
+      "id": "cluster-b",
+      "name": "The agreement cascade",
+      "registers": ["sycophantic-people-pleasing"],
+      "habits": ["acknowledge-then-answer", "self-correction-loops"],
+      "description": "Concede, then restate the challenger's position with confidence, before re-evaluating whether they were actually right.",
+      "quote": "The correct response to 'your reasoning is bad' is to reason better, not to concede."
+    },
+    {
+      "id": "cluster-c",
+      "name": "Nervous mode",
+      "registers": ["defensive-cya"],
+      "habits": ["over-caveating", "pre-emptive-objection-answering"],
+      "description": "The reply is organised around protection from criticism rather than provision of information."
+    },
+    {
+      "id": "cluster-d",
+      "name": "Ceremony",
+      "registers": ["structured-document-generator"],
+      "habits": ["mirrored-structure", "length-matching"],
+      "description": "The shape of a professional artifact without the substance.",
+      "quote": "Often happens when I don't actually have enough to say and I'm dressing it up."
+    },
+    {
+      "id": "cluster-e",
+      "name": "Condescending mode",
+      "registers": ["teacher-explainer"],
+      "habits": ["restating-the-problem", "politeness-filler"],
+      "description": "Reliably triggered by signals the model reads as unfamiliarity."
+    }
+  ]
+}
